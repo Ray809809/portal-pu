@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>QR Code Akses Web PU Pekerjaan Umum</title>
+  <link rel="stylesheet" href="style.css?v=2.5">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: linear-gradient(180deg, #0F2D59 0%, #153E75 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 1rem 0.75rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-card-container {
+      background: #FFFFFF;
+      border-radius: 18px;
+      max-width: 480px;
+      width: 100%;
+      padding: 1.75rem 1.25rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      position: relative;
+    }
+
+    .qr-header-badge {
+      display: inline-block;
+      background: #0F294A;
+      color: #FABE2C;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.5px;
+    }
+
+    .qr-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0F294A;
+      margin: 0 0 0.35rem 0;
+      line-height: 1.25;
+    }
+
+    .qr-subtitle {
+      font-size: 0.82rem;
+      color: #64748B;
+      margin: 0 0 1rem 0;
+      line-height: 1.4;
+    }
+
+    .qr-target-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .qr-tab-btn {
+      padding: 0.55rem 0.35rem;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      background: #F8FAFC;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.2rem;
+      transition: all 0.2s;
+    }
+
+    .qr-tab-btn.active {
+      background: #0F294A;
+      color: #FABE2C;
+      border-color: #0F294A;
+      box-shadow: 0 2px 6px rgba(15, 41, 74, 0.2);
+    }
+
+    .qr-code-wrapper {
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      width: 210px;
+      height: 210px;
+    }
+
+    #qrcodeCanvas img,
+    #qrcodeCanvas canvas {
+      margin: 0 auto;
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .qr-url-box {
+      background: #F1F5F9;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: #0F294A;
+      font-weight: bold;
+      word-break: break-all;
+      margin-bottom: 1rem;
+    }
+
+    .qr-instruction {
+      background: #EFF6FF;
+      border-left: 4px solid #0284C7;
+      padding: 0.75rem 0.85rem;
+      border-radius: 6px;
+      text-align: left;
+      font-size: 0.78rem;
+      color: #1E293B;
+      line-height: 1.45;
+      margin-bottom: 1.25rem;
+    }
+
+    .qr-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .btn-qr-action {
+      background: #0F294A;
+      color: #FFFFFF;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      width: 100%;
+    }
+
+    .btn-qr-secondary {
+      background: #0284C7;
+      color: #FFFFFF;
+    }
+
+    .btn-qr-print {
+      background: #F1F5F9;
+      color: #334155;
+      border: 1px solid #CBD5E1;
+    }
+
+    @media (min-width: 500px) {
+      .qr-actions {
+        flex-direction: row;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="qr-card-container">
+    <div style="display:flex; justify-content:center; margin-bottom:0.75rem;">
+      <img src="logo-pu.webp" alt="Logo PU"
+        style="width:54px; height:54px; object-fit:contain; border-radius:8px; box-shadow:0 3px 10px rgba(0,0,0,0.12);">
+    </div>
+    <div class="qr-header-badge">PU PEKERJAAN UMUM</div>
+    <h1 class="qr-title" id="pageTitleText">Scan Barcode Akses Portal PU</h1>
+    <p class="qr-subtitle" id="pageDescText">Pilih peruntukan portal di bawah untuk menampilkan barcode resmi PU
+      Pekerjaan Umum.</p>
+
+    <!-- 2 Pilihan Barcode Mandiri: Tamu & Admin -->
+    <div class="qr-target-tabs">
+      <button type="button" class="qr-tab-btn active" id="tabBtnTamu" onclick="selectPortal('tamu')">
+        <span style="font-size: 1.25rem;">📋</span>
+        <span>Portal Tamu</span>
+      </button>
+      <button type="button" class="qr-tab-btn" id="tabBtnAdmin" onclick="selectPortal('admin')">
+        <span style="font-size: 1.25rem;">👑</span>
+        <span>Portal Admin</span>
+      </button>
+    </div>
+
+    <!-- Barcode / QR Code Container -->
+    <div class="qr-code-wrapper">
+      <div id="qrcodeCanvas"></div>
+    </div>
+
+    <div class="qr-url-box" id="qrTargetUrl">
+      Memuat URL...
+    </div>
+
+    <div class="qr-instruction" id="qrInstructionText">
+      <strong>📱 Petunjuk Pemindaian:</strong>
+      <ol style="margin: 0.35rem 0 0 1.1rem; padding: 0;">
+        <li>Buka aplikasi <strong>Kamera</strong> di HP Android atau iPhone.</li>
+        <li>Arahkan kamera ke barcode di atas.</li>
+        <li>Ketuk link yang muncul di layar HP untuk membuka portal.</li>
+      </ol>
+    </div>
+
+    <div class="qr-actions">
+      <a class="btn-qr-action btn-qr-secondary" id="btnDirectWeb" href="tamu.html">
+        Buka Web Langsung &rarr;
+      </a>
+      <button type="button" class="btn-qr-action btn-qr-print" onclick="window.print()">
+        🖨️ Cetak Barcode
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let currentPortal = 'tamu';
+    let qrcodeObj = null;
+
+    function getBaseUrl() {
+      const host = window.location.hostname;
+      const port = window.location.port ? ':' + window.location.port : '';
+      if (host.includes('loca.lt') || host.includes('vercel.app') || host.includes('netlify.app')) {
+        return window.location.origin;
+      }
+      if (host === 'localhost' || host === '127.0.0.1') {
+        // Otomatis arahkan ke IP LAN Komputer (192.168.1.45) agar HP orang lain di WiFi yang sama bisa scan & absen
+        return 'http://192.168.1.45:3000';
+      }
+      return window.location.origin;
+    }
+
+    function generateQr(url) {
+      const container = document.getElementById('qrcodeCanvas');
+      container.innerHTML = '';
+
+      if (typeof QRCode !== 'undefined') {
+        qrcodeObj = new QRCode(container, {
+          text: url,
+          width: 180,
+          height: 180,
+          colorDark: "#0F294A",
+          colorLight: "#FFFFFF",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      } else {
+        const img = document.createElement('img');
+        img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(url);
+        img.style.width = '180px';
+        img.style.height = '180px';
+        container.appendChild(img);
+      }
+    }
+
+    function updateView() {
+      const base = getBaseUrl();
+      let targetPath = 'tamu.html';
+      let title = 'Scan Barcode Portal Tamu';
+      let desc = 'Khusus pengunjung & masyarakat untuk pengisian buku tamu dinas, audiensi, dan permohonan layanan publik.';
+
+      if (currentPortal === 'admin') {
+        targetPath = 'index.html?login_as=PUPR-SUP01';
+        title = 'Scan Barcode Portal Admin PU';
+        desc = 'Khusus pejabat, admin unit, dan PIC staf untuk mengelola sistem serta kotak masuk laporan.';
+      }
+
+      const targetUrl = base + '/' + targetPath;
+      document.getElementById('pageTitleText').textContent = title;
+      document.getElementById('pageDescText').textContent = desc;
+      document.getElementById('qrTargetUrl').textContent = targetUrl;
+
+      const directBtn = document.getElementById('btnDirectWeb');
+      if (directBtn) {
+        directBtn.href = targetPath;
+      }
+      generateQr(targetUrl);
+    }
+
+    window.selectPortal = function (portal) {
+      currentPortal = portal;
+      const tabTamu = document.getElementById('tabBtnTamu');
+      const tabAdmin = document.getElementById('tabBtnAdmin');
+      if (tabTamu) tabTamu.classList.toggle('active', portal === 'tamu');
+      if (tabAdmin) tabAdmin.classList.toggle('active', portal === 'admin');
+      updateView();
+    };
+
+    window.addEventListener('DOMContentLoaded', updateView);
+  </script>
+</body>
+
+</html>
