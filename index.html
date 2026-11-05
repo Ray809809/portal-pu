@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+  content="Sistem Informasi Pengelolaan Identitas dan Manajemen Pengguna Tahap 2 (Super Admin, Bidang, Sakres) - PU
+  Pekerjaan Umum.">
+  <title>Portal Pengguna - PU Pekerjaan Umum (Tahap 2)</title>
+  <link rel="stylesheet" href="style.css?v=3.8">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%230F294A%22 rx=%2210%22/><text y=%2268%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2250%22 font-weight=%22bold%22 fill=%22%23FABE2C%22>PU</text></svg>">
+</head>
+
+<body>
+  <div class="app-wrapper">
+
+    <!-- Header Resmi PU Pekerjaan Umum -->
+    <header class="pupr-topbar">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <!-- Tombol Toggle Menu Navigator (Aktif saat login di pojok kiri atas) -->
+        <button type="button" class="btn-sidebar-toggle" id="btnToggleSidebar" title="Buka/Tutup Menu Navigator"
+          style="display: inline-flex;" aria-label="Toggle Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+          <span>Menu</span>
+        </button>
+
+        <div class="pupr-brand">
+          <img src="logo-pu.webp" alt="Logo PU" class="pupr-logo-img">
+          <div class="pupr-brand-text">
+            <span class="pupr-brand-title">PU PEKERJAAN UMUM</span>
+            <span class="pupr-brand-sub">Sistem Manajemen Pengguna &amp; Autentikasi Pegawai (Super Admin
+              &bull; Bidang &bull; Sakres)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Widget Tengah Topbar: Jam Kedinasan & Status Server (Aktif saat login) -->
+      <div class="topbar-center-widgets" id="topbarCenterWidgets" style="display: flex;">
+        <div class="topbar-clock-badge" id="topbarClockBadge" title="Waktu Kedinasan Resmi (WIB)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="topbarClockText">Memuat waktu...</span>
+        </div>
+        <div class="topbar-server-pill" title="Status Koneksi Pusat Data dan Teknologi Informasi PUPR">
+          <span class="server-pulse-dot"></span>
+          <span>PUSDATIN Online</span>
+        </div>
+      </div>
+
+      <!-- User Panel (Aktif saat login) -->
+      <div class="nav-user-panel" id="navUserPanel" style="display: flex;">
+
+        <!-- Notifikasi Kedinasan: Laporan Masuk -->
+        <div class="topbar-notif-wrapper" style="position:relative;">
+          <button type="button" class="btn-topbar-tool" id="btnTopbarNotif"
+            title="Laporan Masuk Baru">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="pointer-events:none;">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="tool-badge-dot notif-pulse" id="notifBadgeDot" style="pointer-events:none;">0</span>
+          </button>
+
+          <!-- Dropdown Notifikasi Khusus Laporan Masuk -->
+          <div class="topbar-dropdown-menu" id="notifDropdown" style="display: none; width:340px; position:absolute; right:0; top:calc(100% + 8px); z-index:99999;">
+            <div class="dropdown-header" style="background:#153E75; color:#fff; display:flex; justify-content:space-between; align-items:center; padding:0.65rem 0.85rem;">
+              <span style="font-weight: 800; font-size: 0.82rem; display:flex; align-items:center; gap:0.4rem;">
+                <span>📥</span> Laporan Tamu Masuk
+              </span>
+              <button type="button" class="dropdown-close-btn" id="btnCloseNotif" style="color:#fff; background:none; border:none; font-size:1.25rem; cursor:pointer; line-height:1;">&times;</button>
+            </div>
+            <div class="notif-list" id="notifListContainer" style="max-height:340px; overflow-y:auto; background:#fff;">
+              <!-- Di-render dinamis khusus daftar laporan masuk -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tombol QR Code Akses Mobile -->
+        <a href="barcode.html" target="_blank" class="btn-topbar-tool"
+          style="text-decoration:none; background:#FABE2C; color:#0F294A;"
+          title="Buka Lembar Barcode / QR Code untuk Scan Masuk Web">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span class="btn-tool-text">Barcode</span>
+        </a>
+
+        <!-- Tombol Akses Portal Tamu -->
+        <a href="tamu.html" target="_blank" class="btn-topbar-tool"
+          style="text-decoration:none; background:#0284C7; color:#fff;"
+          title="Buka Portal Tamu &amp; Pelayanan">
+          <span style="font-size:0.9rem;">📋</span>
+          <span class="btn-tool-text">Portal Tamu</span>
+        </a>
+
+        <!-- Tombol Layanan Bantuan / Helpdesk -->
+        <button type="button" class="btn-topbar-tool" id="btnTopbarHelp" title="Pusat Bantuan &amp; Helpdesk PU">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span class="btn-tool-text">Helpdesk</span>
+        </button>
+
+        <div class="nav-user-card">
+          <div class="nav-user-avatar" id="navAvatar">BS</div>
+          <div class="nav-user-meta">
+            <span class="nav-user-nama" id="navUserName">Drs. Bambang Sudiro, M.Si.</span>
+            <span class="nav-user-unit" id="navUserUnit">Super Admin &bull; Sekretariat Jenderal</span>
+          </div>
+        </div>
+        <button type="button" class="btn-nav-logout" id="navLogoutBtn">
+          Keluar
+        </button>
+      </div>
+    </header>
+
+
+
+    <!-- Konten Utama -->
+    <main class="main-wrapper">
+
+      <!-- ================= HALAMAN LOGIN & PENDAFTARAN INTERNAL (PORTAL 1) ================= -->
+      <section class="section-view" id="authSection" aria-label="Halaman Autentikasi Pegawai">
+
+        <div class="auth-container" style="margin-top:1rem;">
+          <div class="auth-dual-wrapper">
+
+            <!-- Sisi Kiri: Identitas Resmi PUPR & Pintasan Uji Coba -->
+            <div class="auth-left-sidebar">
+              <div class="auth-instansi-header">
+                <div class="auth-instansi-logo" style="display:flex; align-items:center; gap:0.75rem;">
+                  <img src="logo-pu.webp" alt="Logo PU" style="width:48px; height:48px; object-fit:contain; border-radius:6px;">
+                  <div>
+                    <div class="auth-instansi-title">PU PEKERJAAN UMUM</div>
+                    <div style="font-size:0.75rem; color:var(--pupr-yellow); font-weight:700;">Republik Indonesia</div>
+                  </div>
+                </div>
+                <div class="auth-instansi-sub">
+                  Sistem Informasi Pengelolaan Identitas &amp; Hak Akses Pegawai
+                </div>
+              </div>
+
+              <!-- Keterangan 3 Peran Resmi -->
+              <div class="auth-role-summary">
+                <div class="auth-role-summary-title">Tingkatan Hak Akses Sistem:</div>
+                <div class="auth-role-list">
+                  <div class="auth-role-item">
+                    <span class="badge-role badge-role-super">Super Admin</span>
+                    <span>Wewenang penuh seluruh unit</span>
+                  </div>
+                  <div class="auth-role-item">
+                    <span class="badge-role badge-role-admin">Admin Unit</span>
+                    <span>Pengelola unit kerja tertentu</span>
+                  </div>
+                  <div class="auth-role-item">
+                    <span class="badge-role badge-role-pic">PIC / Staf</span>
+                    <span>Pelaksana teknis &amp; operasional</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Navigasi Akses Eksternal -->
+              <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem;">
+                <a href="barcode.html" target="_blank"
+                  style="display: block; text-align: center; background: #FABE2C; color: #0F294A; font-weight: 700; font-size: 0.82rem; padding: 0.65rem; border-radius: 6px; text-decoration: none;">
+                  📱 Buka Barcode QR Masuk Web
+                </a>
+                <a href="tamu.html" target="_blank"
+                  style="display: block; text-align: center; background: #0284C7; color: #fff; font-weight: 700; font-size: 0.82rem; padding: 0.65rem; border-radius: 6px; text-decoration: none;">
+                  📋 Buka Portal Tamu &amp; Pengaduan PU
+                </a>
+              </div>
+
+            </div>
+
+            <!-- Sisi Kanan: Form Masuk & Registrasi -->
+            <div class="auth-right-panel">
+
+              <div class="auth-panel-heading">
+                <h1 id="authMainTitle">Akses Pengguna</h1>
+                <p id="authMainSubtitle">Silakan masuk menggunakan ID User / NIP dan Kata Sandi Anda</p>
+              </div>
+
+              <!-- Tab Navigasi Bersih -->
+              <div class="auth-tab-group" role="tablist">
+                <button type="button" class="auth-tab-item active" id="tabLogin" role="tab" aria-selected="true">
+                  Masuk Manual
+                </button>
+                <button type="button" class="auth-tab-item" id="tabBarcode" role="tab" aria-selected="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;">
+                    <rect x="3" y="4" width="2" height="16" />
+                    <rect x="7" y="4" width="1" height="16" />
+                    <rect x="10" y="4" width="3" height="16" />
+                    <rect x="15" y="4" width="1" height="16" />
+                    <rect x="18" y="4" width="3" height="16" />
+                  </svg>Scan Barcode ID
+                </button>
+                <button type="button" class="auth-tab-item" id="tabRegister" role="tab" aria-selected="false">
+                  Pendaftaran Baru
+                </button>
+              </div>
+
+              <!-- Alert Kesalahan Login Inline -->
+              <div class="auth-inline-alert" id="loginAlert" role="alert">
+                <div style="font-weight: 700; margin-bottom: 0.15rem;" id="loginAlertTitle">Akses Ditolak</div>
+                <div id="loginAlertMsg">ID User atau Kata Sandi tidak sesuai. Silakan periksa kembali.</div>
+              </div>
+
+              <!-- FORM LOGIN -->
+              <div id="loginFormContainer">
+                <form id="loginForm" novalidate>
+                  <div class="form-field">
+                    <label class="field-label" for="loginId">ID User / NIP Pegawai</label>
+                    <div class="input-box">
+                      <input type="text" id="loginId" class="form-control"
+                        placeholder="Contoh: PUPR-SUP01 / PUPR-ADM-BM" required autocomplete="username">
+                    </div>
+                  </div>
+
+                  <div class="form-field">
+                    <label class="field-label" for="loginPw">Kata Sandi</label>
+                    <div class="input-box">
+                      <input type="password" id="loginPw" class="form-control"
+                        placeholder="Masukkan kata sandi akun" required autocomplete="current-password">
+                      <button type="button" class="btn-toggle-pw" onclick="togglePw('loginPw', this)"
+                        title="Tampilkan/Sembunyikan Kata Sandi" aria-label="Lihat Kata Sandi">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="form-extra-row">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="rememberMe">
+                      <span>Ingat ID User</span>
+                    </label>
+                    <a href="javascript:void(0)" class="help-link" onclick="openModalLupaPassword()" style="color:#B91C1C; font-weight:700;">
+                      🔑 Lupa Kata Sandi?
+                    </a>
+                  </div>
+
+                  <button type="submit" class="btn-primary" id="btnSubmitLogin">
+                    Masuk ke Portal PU &rarr;
+                  </button>
+                </form>
+              </div>
+
+              <!-- FORM LOGIN DENGAN SCANNER BARCODE / KARTU PEGAWAI -->
+              <div id="barcodeFormContainer" style="display: none;">
+                <div
+                  style="background: #F8FAFC; border: 2px dashed #CBD5E1; border-radius: 10px; padding: 1.5rem; text-align: center; margin-bottom: 1.25rem;">
+                  <div
+                    style="width: 56px; height: 56px; background: #E0F2FE; color: #0284C7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      style="width: 28px; height: 28px;">
+                      <rect x="3" y="4" width="2" height="16" />
+                      <rect x="7" y="4" width="1" height="16" />
+                      <rect x="10" y="4" width="3" height="16" />
+                      <rect x="15" y="4" width="1" height="16" />
+                      <rect x="18" y="4" width="3" height="16" />
+                    </svg>
+                  </div>
+                  <h3 style="font-size: 1rem; color: var(--pupr-navy); margin-bottom: 0.25rem;">Mode Scan Barcode /
+                    Kartu Pegawai</h3>
+                  <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0;">
+                    Arahkan scanner barcode fisik ke barcode ID Card pegawai PU, atau ketik langsung kode kartu
+                    pegawai di bawah ini.
+                  </p>
+                </div>
+
+                <form id="barcodeLoginForm" novalidate>
+                  <div class="form-field">
+                    <label class="field-label" for="barcodeInput">Hasil Scan Barcode / NIP</label>
+                    <div class="input-box">
+                      <input type="text" id="barcodeInput" class="form-control"
+                        placeholder="Scan barcode kartu atau masukkan ID pegawai" autofocus autocomplete="off">
+                    </div>
+                    <div class="field-hint" style="color: #0369A1;">
+                      💡 Alat scanner barcode USB/Bluetooth akan langsung menekan tombol Masuk secara otomatis begitu
+                      barcode terbaca.
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn-primary" id="btnSubmitBarcode" style="background: #0284C7;">
+                    Masuk dengan Barcode &rarr;
+                  </button>
+                </form>
+              </div>
+
+              <!-- FORM REGISTRASI USER BARU -->
+              <div id="registerFormContainer" style="display: none;">
+                <form id="registerForm" novalidate>
+
+                  <div class="form-field">
+                    <label class="field-label" for="regRole">Tingkat Peran Akun</label>
+                    <div class="input-box">
+                      <select id="regRole" class="form-control" required>
+                        <!-- Pilihan peran diisi dari JavaScript -->
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-field">
+                    <label class="field-label" for="regId">ID User / NIP</label>
+                    <div class="input-box">
+                      <input type="text" id="regId" class="form-control" placeholder="Contoh: PUPR-PIC-02" required>
+                    </div>
+                    <div class="field-hint">Format ID unik disarankan otomatis</div>
+                  </div>
+
+                  <div class="form-field">
+                    <label class="field-label" for="regNama">Nama Lengkap Pegawai</label>
+                    <div class="input-box">
+                      <input type="text" id="regNama" class="form-control"
+                        placeholder="Nama lengkap beserta gelar jika ada" required>
+                    </div>
+                  </div>
+
+                  <div class="form-field">
+                    <label class="field-label" for="regPw">Kata Sandi</label>
+                    <div class="input-box">
+                      <input type="password" id="regPw" class="form-control" placeholder="Buat kata sandi akun" required
+                        autocomplete="new-password">
+                      <button type="button" class="btn-toggle-pw" onclick="togglePw('regPw', this)"
+                        title="Tampilkan/Sembunyikan Kata Sandi" aria-label="Lihat Kata Sandi">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="form-field">
+                    <label class="field-label" for="regUnit">Unit Kerja / Direktorat Jenderal</label>
+                    <div class="input-box">
+                      <select id="regUnit" class="form-control" required>
+                        <!-- Pilihan diisi dari JavaScript -->
+                      </select>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn-primary" id="btnSubmitRegister">
+                    Simpan &amp; Daftarkan Akun &rarr;
+                  </button>
+                </form>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= HALAMAN DASHBOARD DENGAN SIDEBAR NAVIGATOR (POJOK KIRI ATAS) ================= -->
+      <section class="section-view active" id="dashboardSection" aria-label="Dashboard Manajemen Pegawai">
+        <!-- Backdrop Mobile Drawer -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+        <div class="dashboard-layout">
+
+          <!-- SIDEBAR NAVIGATOR MENU (POJOK KIRI) -->
+          <aside class="dashboard-sidebar" id="dashboardSidebar">
+
+            <!-- User Info di Atas Sidebar -->
+            <div class="sidebar-user-card" style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <div class="sidebar-avatar" id="sidebarAvatar">BS</div>
+                <div>
+                  <div class="sidebar-user-name" id="sidebarUserName">Drs. Bambang Sudiro, M.Si.</div>
+                  <div class="sidebar-user-role" id="sidebarUserRole"><span class="badge-role badge-role-super">Super
+                      Admin</span></div>
+                </div>
+              </div>
+              <button type="button" class="btn-sidebar-close" onclick="toggleSidebar()" aria-label="Tutup Menu"
+                style="background:rgba(255,255,255,0.15); border:none; color:#fff; font-size:1.15rem; width:28px; height:28px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+            </div>
+
+            <!-- Judul Navigasi -->
+            <div class="sidebar-nav-title">Menu Navigasi Portal</div>
+
+            <!-- Daftar Menu Navigator -->
+            <nav class="sidebar-menu">
+              <!-- Menu 1: Beranda Utama -->
+              <button type="button" class="sidebar-menu-btn active" data-page="pageDashboard" id="navMenuDashboard">
+                <div class="sidebar-menu-left">
+                  <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="7" height="9"></rect>
+                      <rect x="14" y="3" width="7" height="5"></rect>
+                      <rect x="14" y="12" width="7" height="9"></rect>
+                      <rect x="3" y="16" width="7" height="5"></rect>
+                    </svg>
+                  </span>
+                  <span>Beranda Ringkasan</span>
+                </div>
+                <span class="menu-badge" style="background:#DCFCE7; color:#166534; font-weight:700;">Live</span>
+              </button>
+
+              <!-- Menu 2: Data Pegawai / User Management -->
+              <button type="button" class="sidebar-menu-btn" data-page="pageUsers" id="navMenuUsers">
+                <div class="sidebar-menu-left">
+                  <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                  </span>
+                  <span>Data Pegawai</span>
+                </div>
+                <span class="menu-counter" id="menuCountUsers"
+                  style="background:#0F294A; color:#FABE2C; font-weight:800;">11</span>
+              </button>
+
+              <!-- Menu 3: Unit Kerja PU -->
+              <button type="button" class="sidebar-menu-btn" data-page="pageUnits" id="navMenuUnits">
+                <div class="sidebar-menu-left">
+                  <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                      <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                  </span>
+                  <span>Unit Kerja PU</span>
+                </div>
+                <span class="menu-badge" style="background:#E2E8F0; color:#334155;">11 Unit</span>
+              </button>
+
+              <!-- Menu 4: Laporan & Ekspor Data -->
+              <button type="button" class="sidebar-menu-btn" data-page="pageReports" id="navMenuReports">
+                <div class="sidebar-menu-left">
+                  <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                  </span>
+                  <span>Laporan &amp; Ekspor</span>
+                </div>
+                <span class="menu-badge" style="background:#DCFCE7; color:#166534;">Excel/CSV</span>
+              </button>
+
+              <!-- Menu 5: Log Aktivitas Kedinasan -->
+              <button type="button" class="sidebar-menu-btn" data-page="pageAudit" id="navMenuAudit">
+                <div class="sidebar-menu-left">
+                  <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 15 14"></polyline>
+                    </svg>
+                  </span>
+                  <span>Log Aktivitas</span>
+                </div>
+                <span class="menu-badge" id="menuAuditBadge" style="background:#FEF3C7; color:#92400E;">Audit</span>
+              </button>
+
+              <!-- Menu 6: Kotak Masuk Permohonan Publik (Aspirasi Warga & Perusahaan) -->
+              <button type="button" class="sidebar-menu-btn" data-page="pageInboxPublic" id="navMenuInboxPublic">
+                <div class="sidebar-menu-left">
+                  <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                      <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                  </span>
+                  <span>Kotak Masuk Laporan</span>
+                </div>
+                <span class="menu-counter notif-pulse" id="menuCountInboxPublic"
+                  style="background:#EF4444; color:#fff; font-weight:800;">4 Baru</span>
+              </button>
+
+              <!-- Menu Khusus Super Admin: Laporan Lupa Password Akun Pegawai -->
+              <button type="button" class="sidebar-menu-btn" data-page="pageResetRequests" id="navMenuResetRequests" style="display:none;">
+                <div class="sidebar-menu-left">
+                  <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </span>
+                  <span>Laporan Lupa Sandi</span>
+                </div>
+                <span class="menu-counter notif-pulse" id="menuCountResetRequests"
+                  style="background:#D97706; color:#fff; font-weight:800; display:none;">0</span>
+              </button>
+
+              <!-- Menu 7: Regulasi & SOP PU -->
+              <button type="button" class="sidebar-menu-btn" data-page="pageRegulations" id="navMenuRegulations">
+                <div class="sidebar-menu-left">
+                  <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                  </span>
+                  <span>Regulasi &amp; SOP</span>
+                </div>
+                <span class="menu-badge" style="background:#F1F5F9; color:#475569;">SPBE</span>
+              </button>
+
+              <!-- Menu 7: Profil Akun Saya -->
+              <button type="button" class="sidebar-menu-btn" data-page="pageProfile" id="navMenuProfile">
+                <div class="sidebar-menu-left">
+                  <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                      <circle cx="9" cy="10" r="2"></circle>
+                      <line x1="15" y1="8" x2="17" y2="8"></line>
+                      <line x1="15" y1="12" x2="17" y2="12"></line>
+                    </svg>
+                  </span>
+                  <span>Profil Akun Saya</span>
+                </div>
+              </button>
+            </nav>
+
+            <!-- Footer Sidebar: Tombol Keluar Sesi Cepat -->
+            <div class="sidebar-footer">
+              <button type="button" class="btn-sidebar-logout" id="sidebarLogoutBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Keluar Sesi</span>
+              </button>
+            </div>
+
+          </aside>
+
+          <!-- CONTENT AREA SISI KANAN -->
+          <div class="dashboard-main-content">
+
+            <!-- HALAMAN 1: BERANDA RINGKASAN (DEFAULT) -->
+            <div class="tab-page-content active" id="pageDashboard">
+
+              <!-- Kartu Sambutan Resmi -->
+              <div class="welcome-card">
+                <div class="welcome-info">
+                  <div class="welcome-avatar" id="heroAvatar">BS</div>
+                  <div>
+                    <div class="welcome-title">Selamat Datang, <span id="heroUserName">Drs. Bambang Sudiro, M.Si.</span>
+                    </div>
+                    <div class="welcome-meta">
+                      <span>ID Pengguna: <strong id="heroUserId">PUPR-SUP01</strong></span>
+                      <span>&bull;</span>
+                      <span class="badge-unit" id="heroUserUnit">Sekretariat Jenderal</span>
+                      <span>&bull;</span>
+                      <span id="heroUserRole"><span class="badge-role badge-role-super">Super Admin</span></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem;">
+                  <button type="button" class="btn-primary btn-sm" id="btnOpenAddModal">
+                    + Tambah User
+                  </button>
+                  <button type="button" class="btn-secondary btn-sm" id="btnLogout">
+                    Keluar
+                  </button>
+                </div>
+              </div>
+
+              <!-- Alert Penjelasan Hak Akses Peran Aktif -->
+              <div class="role-info-alert" id="roleInfoAlert">
+                <div id="roleInfoText">
+                  Anda masuk dengan peran <strong>Super Admin</strong>. Anda memiliki wewenang penuh mengelola akun di
+                  <strong>seluruh unit kerja</strong> PU Pekerjaan Umum.
+                </div>
+                <div class="role-info-badge" id="roleInfoBadge">
+                  <span class="badge-role badge-role-super">Akses Penuh Seluruh Unit</span>
+                </div>
+              </div>
+
+              <!-- Statistik Ringkas -->
+              <div class="stats-grid">
+                <div class="stat-item">
+                  <div class="stat-label" id="statLabelTotal">Total User Terdaftar</div>
+                  <div class="stat-number" id="statTotalUsers">11 Pegawai</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-label" id="statLabelUnit">Jumlah Unit Kerja</div>
+                  <div class="stat-number" id="statTotalUnits">11 Unit</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-label">Status Sesi</div>
+                  <div class="stat-number" style="font-size: 1.15rem; color: var(--color-success); margin-top: 0.4rem;"
+                    id="statActiveStatus">
+                    Aktif
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rekapitulasi Cepat Unit Kerja PU -->
+              <div class="panel-table">
+                <div class="panel-table-header">
+                  <div class="panel-title">
+                    <h2>Distribusi Pegawai per Unit Kerja</h2>
+                    <p>Rekapitulasi jumlah staf dan admin di masing-masing Direktorat Jenderal / Balai</p>
+                  </div>
+                  <button type="button" class="btn-secondary btn-sm" onclick="switchSidebarPage('pageUsers')">
+                    Lihat Seluruh Pegawai &rarr;
+                  </button>
+                </div>
+                <div class="table-wrapper">
+                  <table class="pupr-table">
+                    <thead>
+                      <tr>
+                        <th>Unit Kerja / Direktorat</th>
+                        <th>Jumlah Pegawai Terdaftar</th>
+                        <th>Status Pengelolaan</th>
+                        <th>Aksi Cepat</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rekapTableBody">
+                      <!-- Diisi oleh app.js -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- HALAMAN 2: MANAJEMEN PEGAWAI (TABEL LENGKAP) -->
+            <div class="tab-page-content" id="pageUsers">
+
+              <!-- Panel Tabel Pengguna -->
+              <div class="panel-table">
+                <div class="panel-table-header">
+                  <div class="panel-title">
+                    <h2>Data Pengguna Sistem</h2>
+                    <p>Daftar identitas user (ID, Nama, Unit Kerja, Peran, dan Password)</p>
+                  </div>
+
+                  <div class="panel-actions">
+                    <!-- Kolom Pencarian -->
+                    <div class="search-field">
+                      <input type="text" id="searchInput" class="form-control"
+                        placeholder="Cari ID, Nama, Unit, atau Peran...">
+                    </div>
+
+                    <!-- Filter Unit -->
+                    <div class="filter-field">
+                      <select id="filterUnit" class="form-control">
+                        <!-- Diisi lewat JavaScript -->
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tabel Data -->
+                <div class="table-wrapper">
+                  <table class="pupr-table">
+                    <thead>
+                      <tr>
+                        <th>ID User</th>
+                        <th>Nama Pegawai</th>
+                        <th>Unit Kerja</th>
+                        <th>Tingkat Peran</th>
+                        <th>Kata Sandi</th>
+                        <th>Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                      <tr>
+                        <td><span class="id-badge">PUPR-SUP01</span></td>
+                        <td>
+                          <div class="pegawai-nama">Drs. Bambang Sudiro, M.Si.</div>
+                          <div style="font-size: 0.75rem; color: #64748B;">Terdaftar: 2026-10-01 08:00</div>
+                        </td>
+                        <td><span class="pegawai-unit">Sekretariat Jenderal</span></td>
+                        <td><span class="badge-role badge-role-super">Super Admin</span></td>
+                        <td><span class="table-pw-toggle" onclick="toggleTablePw(this, 'pupr123')">••••••••</span></td>
+                        <td>
+                          <div class="table-opsi"><button type="button" class="btn-opsi"
+                              onclick="openEditModal('PUPR-SUP01')">Ubah</button><span
+                              style="font-size: 0.75rem; color: #0F294A; font-weight: 600; padding: 0.35rem 0.5rem;">Akun
+                              Anda</span></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><span class="id-badge">PUPR-ADM-BM</span></td>
+                        <td>
+                          <div class="pegawai-nama">Ir. Hendra Gunawan, S.T., M.T.</div>
+                          <div style="font-size: 0.75rem; color: #64748B;">Terdaftar: 2026-10-15 08:30</div>
+                        </td>
+                        <td><span class="pegawai-unit">Ditjen Bina Marga</span></td>
+                        <td><span class="badge-role badge-role-admin">Admin Unit</span></td>
+                        <td><span class="table-pw-toggle" onclick="toggleTablePw(this, 'pupr123')">••••••••</span></td>
+                        <td>
+                          <div class="table-opsi"><button type="button" class="btn-opsi"
+                              onclick="openEditModal('PUPR-ADM-BM')">Ubah</button><button type="button"
+                              class="btn-opsi btn-hapus" onclick="handleDelete('PUPR-ADM-BM')">Hapus</button></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><span class="id-badge">PUPR-PIC-BM</span></td>
+                        <td>
+                          <div class="pegawai-nama">Rian Kurniawan, S.T.</div>
+                          <div style="font-size: 0.75rem; color: #64748B;">Terdaftar: 2026-10-16 09:00</div>
+                        </td>
+                        <td><span class="pegawai-unit">Ditjen Bina Marga</span></td>
+                        <td><span class="badge-role badge-role-pic">PIC / Staf</span></td>
+                        <td><span class="table-pw-toggle" onclick="toggleTablePw(this, 'pupr123')">••••••••</span></td>
+                        <td>
+                          <div class="table-opsi"><button type="button" class="btn-opsi"
+                              onclick="openEditModal('PUPR-PIC-BM')">Ubah</button><button type="button"
+                              class="btn-opsi btn-hapus" onclick="handleDelete('PUPR-PIC-BM')">Hapus</button></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><span class="id-badge">PUPR-ADM-SDA</span></td>
+                        <td>
+                          <div class="pegawai-nama">Dewi Lestari, S.T.</div>
+                          <div style="font-size: 0.75rem; color: #64748B;">Terdaftar: 2026-10-18 09:15</div>
+                        </td>
+                        <td><span class="pegawai-unit">Ditjen Sumber Daya Air</span></td>
+                        <td><span class="badge-role badge-role-admin">Admin Unit</span></td>
+                        <td><span class="table-pw-toggle" onclick="toggleTablePw(this, 'pupr123')">••••••••</span></td>
+                        <td>
+                          <div class="table-opsi"><button type="button" class="btn-opsi"
+                              onclick="openEditModal('PUPR-ADM-SDA')">Ubah</button><button type="button"
+                              class="btn-opsi btn-hapus" onclick="handleDelete('PUPR-ADM-SDA')">Hapus</button></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><span class="id-badge">PUPR-PIC-SDA</span></td>
+                        <td>
+                          <div class="pegawai-nama">Fajar Nugroho, S.T.</div>
+                          <div style="font-size: 0.75rem; color: #64748B;">Terdaftar: 2026-10-19 10:30</div>
+                        </td>
+                        <td><span class="pegawai-unit">Ditjen Sumber Daya Air</span></td>
+                        <td><span class="badge-role badge-role-pic">PIC / Staf</span></td>
+                        <td><span class="table-pw-toggle" onclick="toggleTablePw(this, 'pupr123')">••••••••</span></td>
+                        <td>
+                          <div class="table-opsi"><button type="button" class="btn-opsi"
+                              onclick="openEditModal('PUPR-PIC-SDA')">Ubah</button><button type="button"
+                              class="btn-opsi btn-hapus" onclick="handleDelete('PUPR-PIC-SDA')">Hapus</button></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><span class="id-badge">PUPR-ADM-CK</span></td>
+                        <td>
+                          <div class="pegawai-nama">Agus Setiawan, S.E.</div>
+                          <div style="font-size: 0.75rem; color: #64748B;">Terdaftar: 2026-10-22 13:45</div>
+                        </td>
+                        <td><span class="pegawai-unit">Ditjen Cipta Karya</span></td>
+                        <td><span class="badge-role badge-role-admin">Admin Unit</span></td>
+                        <td><span class="table-pw-toggle" onclick="toggleTablePw(this, 'pupr123')">••••••••</span></td>
+                        <td>
+                          <div class="table-opsi"><button type="button" class="btn-opsi"
+                              onclick="openEditModal('PUPR-ADM-CK')">Ubah</button><button type="button"
+                              class="btn-opsi btn-hapus" onclick="handleDelete('PUPR-ADM-CK')">Hapus</button></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><span class="id-badge">PUPR-PIC-CK</span></td>
+                        <td>
+                          <div class="pegawai-nama">Siti Nurhaliza, A.Md.</div>
+                          <div style="font-size: 0.75rem; color: #64748B;">Terdaftar: 2026-10-23 11:20</div>
+                        </td>
+                        <td><span class="pegawai-unit">Ditjen Cipta Karya</span></td>
+                        <td><span class="badge-role badge-role-pic">PIC / Staf</span></td>
+                        <td><span class="table-pw-toggle" onclick="toggleTablePw(this, 'pupr123')">••••••••</span></td>
+                        <td>
+                          <div class="table-opsi"><button type="button" class="btn-opsi"
+                              onclick="openEditModal('PUPR-PIC-CK')">Ubah</button><button type="button"
+                              class="btn-opsi btn-hapus" onclick="handleDelete('PUPR-PIC-CK')">Hapus</button></div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- HALAMAN 3: UNIT KERJA PUPR (11 DITJEN / BALAI) -->
+            <div class="tab-page-content" id="pageUnits">
+              <div class="panel-table-header"
+                style="background:#FFF; border-radius: var(--radius-md); border:1px solid var(--border-color); padding: 1.25rem 1.5rem;">
+                <div class="panel-title">
+                  <h2>Daftar Unit Kerja PU Pekerjaan Umum</h2>
+                  <p>Struktur organisasi Direktorat Jenderal, Badan, dan Balai Pelaksana di lingkungan PU Pekerjaan Umum
+                  </p>
+                </div>
+              </div>
+
+              <!-- Grid Kartu Unit Kerja -->
+              <div class="units-grid" id="unitsCardContainer">
+                <!-- Diisi JavaScript -->
+              </div>
+            </div>
+
+            <!-- HALAMAN 4: LAPORAN & EKSPOR DATA RESMI -->
+            <div class="tab-page-content" id="pageReports">
+              <div class="panel-table">
+                <div class="panel-table-header" style="flex-wrap: wrap; gap: 1rem;">
+                  <div class="panel-title">
+                    <h2>Pusat Laporan &amp; Ekspor Data Pegawai</h2>
+                    <p>Rekapitulasi identitas pengguna resmi PU Pekerjaan Umum dalam format tabel, CSV/Excel, dan cetak
+                      dokumen dinas</p>
+                  </div>
+
+                  <div class="panel-actions" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                    <button type="button" class="btn-primary btn-sm" id="btnExportCsv"
+                      title="Unduh data dalam format CSV yang kompatibel dengan Microsoft Excel">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width:15px;height:15px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                      <span>Unduh CSV / Excel</span>
+                    </button>
+                    <button type="button" class="btn-secondary btn-sm" id="btnPrintReport"
+                      title="Buka dialog cetak dokumen laporan resmi">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width:15px;height:15px;">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                      </svg>
+                      <span>Cetak Laporan Dinas</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Filter Toolbar Laporan -->
+                <div
+                  style="background:#F8FAFC; border-bottom:1px solid var(--border-color); padding:0.85rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
+                  <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);"
+                      for="reportFilterUnit">Filter Unit:</label>
+                    <select id="reportFilterUnit" class="form-control"
+                      style="font-size:0.8rem; padding:0.35rem 0.65rem;">
+                      <!-- Diisi JavaScript -->
+                    </select>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);"
+                      for="reportFilterRole">Filter Peran:</label>
+                    <select id="reportFilterRole" class="form-control"
+                      style="font-size:0.8rem; padding:0.35rem 0.65rem;">
+                      <option value="">Semua Tingkat Peran</option>
+                      <option value="Super Admin">Super Admin</option>
+                      <option value="Admin Unit">Admin Unit</option>
+                      <option value="PIC">PIC / Staf</option>
+                    </select>
+                  </div>
+                  <!-- Guest Report Toolbar -->
+                  <div
+                    style="background:#F0F8FF; border-bottom:1px solid var(--border-color); padding:0.85rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin-top:1rem;">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                      <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);"
+                        for="guestReportFilterUnit">Filter Unit (Tamu):</label>
+                      <select id="guestReportFilterUnit" class="form-control"
+                        style="font-size:0.8rem; padding:0.35rem 0.65rem;">
+                        <!-- Filled by JavaScript -->
+                      </select>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                      <label style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);"
+                        for="guestReportFilterRole">Filter Peran (Tamu):</label>
+                      <select id="guestReportFilterRole" class="form-control"
+                        style="font-size:0.8rem; padding:0.35rem 0.65rem;">
+                        <option value="">Semua Tingkat Peran</option>
+                        <option value="Super Admin">Super Admin</option>
+                        <option value="Admin Unit">Admin Unit</option>
+                        <option value="PIC">PIC / Staf</option>
+                      </select>
+                    </div>
+                    <div>
+                      <button type="button" class="btn-primary btn-sm" id="btnDownloadGuestReport"
+                        title="Unduh laporan tamu dalam format CSV/Excel">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          style="width:15px;height:15px;">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="7 10 12 15 17 10"></polyline>
+                          <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span>Unduh CSV / Excel (Tamu)</span>
+                      </button>
+                      <button type="button" class="btn-secondary btn-sm" id="btnPrintGuestReport"
+                        title="Cetak laporan tamu">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          style="width:15px;height:15px;">
+                          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                          <path d="M6 18H4a2 0 0 1-2-2v-5a2 0 0 1 2-2h16a2 0 0 1 2 2v5a2 0 0 1-2 2h-2"></path>
+                          <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        <span>Cetak Laporan (Tamu)</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div style="margin-left:auto; font-size:0.8rem; color:var(--text-muted);" id="reportSummaryCount">
+                    Total data siap cetak: <strong>0</strong> pegawai
+                  </div>
+                </div>
+
+                <!-- Area Pratinjau Laporan Kedinasan -->
+                <div class="table-wrapper" id="reportPrintArea">
+                  <div class="report-official-header" id="reportHeaderDinas"
+                    style="display:none; padding:1.5rem 1rem 0.5rem; border-bottom:2px solid var(--pupr-navy); text-align:center; margin-bottom:1rem;">
+                    <div
+                      style="font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--pupr-navy);">
+                      PU (Pekerjaan Umum) Republik Indonesia</div>
+                    <div style="font-size:1.1rem; font-weight:800; margin:0.3rem 0; color:#0F172A;">REKAPITULASI DATA
+                      PENGGUNA PORTAL KEPEGAWAIAN</div>
+                    <div style="font-size:0.75rem; color:var(--text-secondary);" id="reportPrintTimestamp">Dicetak pada
+                      tanggal: -</div>
+                  </div>
+
+                  <table class="pupr-table">
+                    <thead>
+                      <tr>
+                        <th style="width:50px;">No</th>
+                        <th>ID User / NIP</th>
+                        <th>Nama Pegawai Lengkap</th>
+                        <th>Unit Kerja / Ditjen</th>
+                        <th>Tingkat Peran</th>
+                        <th>Status Akun</th>
+                      </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                      <!-- Diisi oleh app.js -->
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- HALAMAN 5: LOG AKTIVITAS KEDINASAN (AUDIT TRAIL) -->
+            <div class="tab-page-content" id="pageAudit">
+              <div class="panel-table">
+                <div class="panel-table-header" style="flex-wrap: wrap; gap: 1rem;">
+                  <div class="panel-title">
+                    <h2>Log Aktivitas Kedinasan &amp; Audit Trail</h2>
+                    <p>Pencatatan riwayat autentikasi, manajemen pengguna, dan perubahan profil untuk kepatuhan tata
+                      kelola SPBE</p>
+                  </div>
+
+                  <div class="panel-actions" style="display:flex; gap:0.5rem; align-items:center;">
+                    <div class="search-field">
+                      <input type="text" id="auditSearchInput" class="form-control"
+                        placeholder="Cari NIP, nama, aksi...">
+                    </div>
+                    <button type="button" class="btn-secondary btn-sm" id="btnClearAudit"
+                      style="display:none; color:#DC2626; border-color:#FECACA;"
+                      title="Hapus seluruh riwayat log (Wewenang Super Admin)">
+                      Bersihkan Log
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Tabel Audit Log -->
+                <div class="table-wrapper">
+                  <table class="pupr-table">
+                    <thead>
+                      <tr>
+                        <th style="width:140px;">Waktu (WIB)</th>
+                        <th>Pelaksana (ID &amp; Nama)</th>
+                        <th>Tingkat Peran</th>
+                        <th>Kategori Aksi</th>
+                        <th>Keterangan Rinci</th>
+                        <th>Unit Kerja</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="auditTableBody">
+                      <!-- Diisi oleh JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- HALAMAN 6: KOTAK MASUK PERMOHONAN & LAPORAN PUBLIK (UNTUK ADMIN & STAF) -->
+            <div class="tab-page-content" id="pageInboxPublic">
+              <div class="panel-table">
+                <div class="panel-table-header" style="flex-wrap: wrap; gap: 1rem;">
+                  <div class="panel-title">
+                    <h2>Kotak Masuk Permohonan &amp; Laporan Publik</h2>
+                    <p>Pesan, aduan masyarakat, dan permohonan layanan mitra badan usaha yang masuk secara langsung ke
+                      sistem kedinasan PUPR</p>
+                  </div>
+
+                  <div class="panel-actions" style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                    <div class="search-field">
+                      <input type="text" id="inboxSearchInput" class="form-control"
+                        placeholder="Cari nama, tiket, instansi, perihal...">
+                    </div>
+                    <div class="filter-field">
+                      <select id="inboxFilterStatus" class="form-control"
+                        style="font-size:0.85rem; padding:0.4rem 0.75rem;">
+                        <option value="">Semua Status</option>
+                        <option value="Menunggu Verifikasi Dinas">Menunggu Verifikasi</option>
+                        <option value="Sedang Ditindaklanjuti">Sedang Ditindaklanjuti</option>
+                        <option value="Selesai Ditangani">Disetujui / Selesai (ACC)</option>
+                      </select>
+                    </div>
+                    <button type="button" class="btn-primary btn-sm" id="btnBatchApproveInbox"
+                      title="ACC / Setujui laporan yang dicentang"
+                      style="background:#059669; border-color:#059669; display:inline-flex; align-items:center; gap:0.35rem;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        style="width:15px;height:15px;">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>ACC / Setujui Terpilih</span>
+                    </button>
+                    <button type="button" class="btn-secondary btn-sm" id="btnExportInboxPublic"
+                      title="Unduh data laporan masuk format Excel / CSV"
+                      style="display:inline-flex; align-items:center; gap:0.35rem;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width:15px;height:15px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                      <span>Unduh Rekap Laporan</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="table-wrapper">
+                  <table class="pupr-table">
+                    <thead>
+                      <tr>
+                        <th style="width:40px; text-align:center;">
+                          <input type="checkbox" id="checkAllInbox" title="Pilih Semua Laporan"
+                            style="cursor:pointer; width:16px; height:16px; accent-color:#059669;">
+                        </th>
+                        <th style="width:110px;">No. Tiket</th>
+                        <th style="width:125px;">Tanggal</th>
+                        <th>Pemohon &amp; Asal Instansi</th>
+                        <th>Kategori &amp; Layanan</th>
+                        <th>Perihal Permohonan</th>
+                        <th>Lokasi Obyek</th>
+                        <th>Disposisi Unit</th>
+                        <th>Status</th>
+                        <th style="width:160px; text-align:center;">Surat Balasan (Sakres)</th>
+                        <th style="width:140px; text-align:center;">Aksi / ACC</th>
+                      </tr>
+                    </thead>
+                    <tbody id="inboxTableBody">
+                      <tr>
+                        <td style="text-align:center;"><input type="checkbox" class="inbox-checkbox"
+                            value="PUPR-PUB-1001"
+                            style="cursor:pointer; width:16px; height:16px; accent-color:#059669;"></td>
+                        <td><strong style="color:var(--pupr-navy);">PUPR-PUB-1001</strong></td>
+                        <td><span style="font-size:0.8rem; color:var(--text-muted);">2026-11-03 08:15</span></td>
+                        <td>
+                          <div style="font-weight:700; color:var(--text-primary);">Bambang Irawan, S.T.</div>
+                          <div style="font-size:0.75rem; color:var(--text-muted);">Dinas PUPR Kab. Cirebon &bull; Telp:
+                            <strong>081298765432</strong>
+                          </div>
+                          <div style="font-size:0.7rem; color:#0369A1;">bambang.i@gmail.com</div>
+                        </td>
+                        <td>
+                          <div style="font-size:0.8rem; font-weight:600; color:#0F294A;">Layanan Pengaduan</div>
+                          <div style="font-size:0.72rem; color:var(--text-muted);">Pemerintah Pusat/Daerah</div>
+                        </td>
+                        <td style="max-width:220px;">
+                          <div style="font-weight:700; font-size:0.83rem; color:var(--pupr-navy);">Perbaikan Kerusakan
+                            Jalan Berlubang Lintas Pantura KM 48</div>
+                          <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:0.2rem;">Lubang sedalam
+                            15cm membahayakan pengguna jalan sepeda motor dan armada logistik.</div>
+                        </td>
+                        <td style="font-size:0.8rem;">Jl. Raya Pantura KM 48, Cirebon</td>
+                        <td><span class="badge-unit">Ditjen Bina Marga</span></td>
+                        <td><span class="badge-role" style="background:#FEF3C7; color:#92400E; font-weight:700;">Sedang
+                            Ditindaklanjuti</span></td>
+                        <td style="text-align:center;">
+                          <div style="display:flex; flex-direction:column; gap:0.35rem; align-items:center;">
+                            <button type="button" onclick="toggleAccSingle('PUPR-PUB-1001')" class="btn-sm"
+                              style="padding:0.3rem 0.65rem; font-size:0.75rem; font-weight:700; border-radius:4px; cursor:pointer; width:100%; background:#059669; color:#fff; border:none;">✓
+                              ACC Laporan</button>
+                            <select onchange="updatePublicReportStatus('PUPR-PUB-1001', this.value)"
+                              class="form-control"
+                              style="font-size:0.72rem; padding:0.25rem 0.4rem; border-color:#CBD5E1;">
+                              <option value="Menunggu Verifikasi Dinas">Menunggu</option>
+                              <option value="Sedang Ditindaklanjuti" selected>Tindaklanjuti</option>
+                              <option value="Selesai Ditangani">Selesai (ACC)</option>
+                            </select>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align:center;"><input type="checkbox" class="inbox-checkbox"
+                            value="PUPR-PUB-1002"
+                            style="cursor:pointer; width:16px; height:16px; accent-color:#059669;"></td>
+                        <td><strong style="color:var(--pupr-navy);">PUPR-PUB-1002</strong></td>
+                        <td><span style="font-size:0.8rem; color:var(--text-muted);">2026-11-03 09:10</span></td>
+                        <td>
+                          <div style="font-weight:700; color:var(--text-primary);">Ir. Hendro Wijaya</div>
+                          <div style="font-size:0.75rem; color:var(--text-muted);">PT. Mitra Sentosa Beton &bull; Telp:
+                            <strong>081387654321</strong>
+                          </div>
+                          <div style="font-size:0.7rem; color:#0369A1;">legal@mitrasentosa.co.id</div>
+                        </td>
+                        <td>
+                          <div style="font-size:0.8rem; font-weight:600; color:#0F294A;">Layanan Rekomendasi Teknis
+                          </div>
+                          <div style="font-size:0.72rem; color:var(--text-muted);">Swasta / BUMN</div>
+                        </td>
+                        <td style="max-width:220px;">
+                          <div style="font-weight:700; font-size:0.83rem; color:var(--pupr-navy);">Permohonan
+                            Rekomendasi Teknis Pemanfaatan Sempadan Saluran Irigasi</div>
+                          <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:0.2rem;">Pembangunan
+                            jembatan penyeberangan akses industri melintasi saluran sekunder.</div>
+                        </td>
+                        <td style="font-size:0.8rem;">Kawasan Industri Cikarang Timur</td>
+                        <td><span class="badge-unit">Ditjen Sumber Daya Air</span></td>
+                        <td><span class="badge-role badge-role-pic">Menunggu Verifikasi</span></td>
+                        <td style="text-align:center;">
+                          <div style="display:flex; flex-direction:column; gap:0.35rem; align-items:center;">
+                            <button type="button" onclick="toggleAccSingle('PUPR-PUB-1002')" class="btn-sm"
+                              style="padding:0.3rem 0.65rem; font-size:0.75rem; font-weight:700; border-radius:4px; cursor:pointer; width:100%; background:#059669; color:#fff; border:none;">✓
+                              ACC Laporan</button>
+                            <select onchange="updatePublicReportStatus('PUPR-PUB-1002', this.value)"
+                              class="form-control"
+                              style="font-size:0.72rem; padding:0.25rem 0.4rem; border-color:#CBD5E1;">
+                              <option value="Menunggu Verifikasi Dinas" selected>Menunggu</option>
+                              <option value="Sedang Ditindaklanjuti">Tindaklanjuti</option>
+                              <option value="Selesai Ditangani">Selesai (ACC)</option>
+                            </select>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr style="background:#F0FDF4;">
+                        <td style="text-align:center;"><input type="checkbox" class="inbox-checkbox"
+                            value="PUPR-PUB-1003"
+                            style="cursor:pointer; width:16px; height:16px; accent-color:#059669;"></td>
+                        <td><strong style="color:var(--pupr-navy);">PUPR-PUB-1003</strong></td>
+                        <td><span style="font-size:0.8rem; color:var(--text-muted);">2026-11-03 09:45</span></td>
+                        <td>
+                          <div style="font-weight:700; color:var(--text-primary);">Siti Rahmawati, M.Si.</div>
+                          <div style="font-size:0.75rem; color:var(--text-muted);">Universitas Padjadjaran &bull; Telp:
+                            <strong>082155551234</strong>
+                          </div>
+                          <div style="font-size:0.7rem; color:#0369A1;">siti.rahma@unpad.ac.id</div>
+                        </td>
+                        <td>
+                          <div style="font-size:0.8rem; font-weight:600; color:#0F294A;">Permohonan Data &amp; Informasi
+                          </div>
+                          <div style="font-size:0.72rem; color:var(--text-muted);">Perguruan Tinggi</div>
+                        </td>
+                        <td style="max-width:220px;">
+                          <div style="font-weight:700; font-size:0.83rem; color:var(--pupr-navy);">Permohonan Data
+                            Masterplan SPAM Regional</div>
+                          <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:0.2rem;">Data spasial
+                            jaringan perpipaan air minum wilayah perkotaan guna studi tesis.</div>
+                        </td>
+                        <td style="font-size:0.8rem;">Kampus Jatinangor &amp; Sumedang</td>
+                        <td><span class="badge-unit">Ditjen Cipta Karya</span></td>
+                        <td><span class="badge-role" style="background:#DCFCE7; color:#166534; font-weight:700;">✓
+                            Disetujui (ACC)</span></td>
+                        <td style="text-align:center;">
+                          <div style="display:flex; flex-direction:column; gap:0.35rem; align-items:center;">
+                            <button type="button" onclick="toggleAccSingle('PUPR-PUB-1003')" class="btn-sm"
+                              style="padding:0.3rem 0.65rem; font-size:0.75rem; font-weight:700; border-radius:4px; cursor:pointer; width:100%; background:#DC2626; color:#fff; border:none;">✕
+                              Batalkan ACC</button>
+                            <select onchange="updatePublicReportStatus('PUPR-PUB-1003', this.value)"
+                              class="form-control"
+                              style="font-size:0.72rem; padding:0.25rem 0.4rem; border-color:#CBD5E1;">
+                              <option value="Menunggu Verifikasi Dinas">Menunggu</option>
+                              <option value="Sedang Ditindaklanjuti">Tindaklanjuti</option>
+                              <option value="Selesai Ditangani" selected>Selesai (ACC)</option>
+                            </select>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align:center;"><input type="checkbox" class="inbox-checkbox"
+                            value="PUPR-PUB-1004"
+                            style="cursor:pointer; width:16px; height:16px; accent-color:#059669;"></td>
+                        <td><strong style="color:var(--pupr-navy);">PUPR-PUB-1004</strong></td>
+                        <td><span style="font-size:0.8rem; color:var(--text-muted);">2026-11-03 10:05</span></td>
+                        <td>
+                          <div style="font-weight:700; color:var(--text-primary);">Ahmad Fauzi, S.Kom.</div>
+                          <div style="font-size:0.75rem; color:var(--text-muted);">PT. Inovasi Cipta Konstruksi &bull;
+                            Telp: <strong>085712345678</strong></div>
+                          <div style="font-size:0.7rem; color:#0369A1;">fauzi.ahmad@inovasidigital.id</div>
+                        </td>
+                        <td>
+                          <div style="font-size:0.8rem; font-weight:600; color:#0F294A;">Layanan Umum &amp; Konsultasi
+                          </div>
+                          <div style="font-size:0.72rem; color:var(--text-muted);">Swasta</div>
+                        </td>
+                        <td style="max-width:220px;">
+                          <div style="font-weight:700; font-size:0.83rem; color:var(--pupr-navy);">Konsultasi
+                            Sertifikasi &amp; Verifikasi Administrasi Kemitraan</div>
+                          <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:0.2rem;">Permohonan
+                            audiensi dan klarifikasi kelengkapan berkas penyedia jasa konstruksi.</div>
+                        </td>
+                        <td style="font-size:0.8rem;">Gedung Utama PUPR, Jakarta Selatan</td>
+                        <td><span class="badge-unit">Sekretariat Jenderal</span></td>
+                        <td><span class="badge-role badge-role-pic">Menunggu Verifikasi</span></td>
+                        <td style="text-align:center;">
+                          <div style="display:flex; flex-direction:column; gap:0.35rem; align-items:center;">
+                            <button type="button" onclick="toggleAccSingle('PUPR-PUB-1004')" class="btn-sm"
+                              style="padding:0.3rem 0.65rem; font-size:0.75rem; font-weight:700; border-radius:4px; cursor:pointer; width:100%; background:#059669; color:#fff; border:none;">✓
+                              ACC Laporan</button>
+                            <select onchange="updatePublicReportStatus('PUPR-PUB-1004', this.value)"
+                              class="form-control"
+                              style="font-size:0.72rem; padding:0.25rem 0.4rem; border-color:#CBD5E1;">
+                              <option value="Menunggu Verifikasi Dinas" selected>Menunggu</option>
+                              <option value="Sedang Ditindaklanjuti">Tindaklanjuti</option>
+                              <option value="Selesai Ditangani">Selesai (ACC)</option>
+                            </select>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- HALAMAN 7: LAPORAN LUPA KATA SANDI (SUPER ADMIN) -->
+            <div class="tab-page-content" id="pageResetRequests" style="display:none;">
+              <div class="panel-table" style="padding:1.5rem;">
+                <div class="panel-title" style="margin-bottom:1.25rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                  <div>
+                    <h2 style="font-size:1.2rem; color:#153E75; display:flex; align-items:center; gap:0.4rem;">
+                      <span>🔑</span> Laporan Lupa Kata Sandi Akun Pegawai
+                    </h2>
+                    <p style="font-size:0.83rem; color:#64748B;">Super Admin dapat melihat permintaan reset sandi, melihat identitas akun, dan mereset kata sandi pegawai.</p>
+                  </div>
+                  <button type="button" class="btn-sm btn-secondary" onclick="renderResetRequestsTable()" style="font-size:0.75rem;">
+                    🔄 Segarkan Data
+                  </button>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table-pupr">
+                    <thead>
+                      <tr>
+                        <th>WAKTU LAPOR</th>
+                        <th>ID USER / NIP</th>
+                        <th>NAMA PEGAWAI</th>
+                        <th>UNIT KERJA</th>
+                        <th>ALASAN / CATATAN</th>
+                        <th>STATUS LAPORAN</th>
+                        <th style="text-align:center;">AKSI BANTUAN SUPER ADMIN</th>
+                      </tr>
+                    </thead>
+                    <tbody id="resetRequestsTableBody">
+                      <!-- Render dinamis -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- HALAMAN 6: REGULASI & SOP KEPEGAWAIAN -->
+            <div class="tab-page-content" id="pageRegulations">
+              <div class="panel-table" style="padding:1.75rem;">
+                <div class="panel-title" style="margin-bottom:1.5rem;">
+                  <h2>Regulasi &amp; Standar Operasional Prosedur (SOP) PUPR</h2>
+                  <p>Pedoman resmi tata kelola akun digital, landasan organisasi, dan kebijakan keamanan SPBE
+                    PU Pekerjaan Umum</p>
+                </div>
+
+                <div class="regulations-grid">
+                  <!-- Regulasi 1 -->
+                  <div class="regulation-card">
+                    <div class="regulation-badge">Dasar Hukum Utama</div>
+                    <div class="regulation-title">Permen PUPR No. 13/PRT/M/2020</div>
+                    <div class="regulation-desc">
+                      Tentang Organisasi dan Tata Kerja PU (Pekerjaan Umum) yang mengatur
+                      kewenangan 11 Unit Organisasi (Ditjen, Badan, dan Balai).
+                    </div>
+                    <div class="regulation-footer">
+                      <span>Kategori: Tata Kerja Dinas</span>
+                      <span class="badge-role badge-role-super">Berlaku</span>
+                    </div>
+                  </div>
+
+                  <!-- Regulasi 2 -->
+                  <div class="regulation-card">
+                    <div class="regulation-badge" style="background:#E0F2FE; color:#0284C7;">Keamanan Informasi</div>
+                    <div class="regulation-title">Surat Edaran Pusdatin No. 04/SE/2024</div>
+                    <div class="regulation-desc">
+                      Petunjuk teknis pengamanan sandi akun, perlindungan data pribadi ASN, dan larangan berbagi
+                      kredensial akses antar pegawai di portal internal.
+                    </div>
+                    <div class="regulation-footer">
+                      <span>Kategori: Keamanan SPBE</span>
+                      <span class="badge-role badge-role-admin">Wajib</span>
+                    </div>
+                  </div>
+
+                  <!-- Regulasi 3 -->
+                  <div class="regulation-card">
+                    <div class="regulation-badge" style="background:#DCFCE7; color:#166534;">Tata Kelola Akses</div>
+                    <div class="regulation-title">SOP Manajemen Pengguna Multi-Tier (RBAC)</div>
+                    <div class="regulation-desc">
+                      Pembagian kewenangan akses berjenjang antara <strong>Super Admin</strong> (Pusat/Sekjen),
+                      <strong>Admin Unit</strong> (Sekretariat Ditjen), dan <strong>PIC</strong> (Staf Teknis).
+                    </div>
+                    <div class="regulation-footer">
+                      <span>Kategori: Prosedur Operasional</span>
+                      <span class="badge-role badge-role-pic">Pedoman</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Callout Box Pedoman Akun -->
+                <div class="security-callout-box"
+                  style="margin-top:1.5rem; background:#FEF3C7; border:1px solid #FCD34D; border-left:4px solid #D97706; padding:1.25rem 1.5rem; border-radius:var(--radius-sm);">
+                  <div
+                    style="font-weight:700; color:#92400E; margin-bottom:0.35rem; display:flex; align-items:center; gap:0.5rem;">
+                    <span>🛡️ Pedoman Keamanan Sandi &amp; Etika Akses Kedinasan</span>
+                  </div>
+                  <ul style="margin:0; padding-left:1.25rem; font-size:0.85rem; color:#78350F; line-height:1.6;">
+                    <li>Setiap akun wajib menggunakan ID User / NIP resmi yang terdaftar pada sistem kepegawaian.</li>
+                    <li>Kata sandi wajib diperbarui berkala dan dilarang menggunakan tanggal lahir atau kata sandi yang
+                      mudah ditebak.</li>
+                    <li>Admin Unit bertanggung jawab penuh atas keabsahan penugasan akun staf PIC di lingkungan unit
+                      kerjanya masing-masing.</li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- HALAMAN 4: PROFIL AKUN SAYA -->
+            <div class="tab-page-content" id="pageProfile">
+              <div class="profile-container">
+
+                <!-- Kartu Identitas Resmi PUPR -->
+                <div class="id-card-pupr">
+                  <div class="id-card-header">
+                    <div class="auth-logo-badge" aria-hidden="true" style="width:36px; height:36px; font-size:1rem;">PU
+                    </div>
+                    <div>
+                      <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; font-weight:700;">
+                        PU Pekerjaan Umum</div>
+                      <div style="font-size:0.65rem; color:#CBD5E1;">Tanda Pengenal Akses Sistem</div>
+                    </div>
+                  </div>
+
+                  <div class="id-card-body">
+                    <div class="id-card-nip" id="cardProfileId">PUPR-001</div>
+                    <div class="id-card-name" id="cardProfileNama">Nama Pegawai</div>
+                    <div style="font-size:0.85rem; color:#E2E8F0;" id="cardProfileUnit">Ditjen Bina Marga</div>
+                  </div>
+
+                  <div
+                    style="display:flex; justify-content:space-between; align-items:center; padding-top:0.75rem; border-top:1px solid rgba(255,255,255,0.2);">
+                    <div id="cardProfileRole">
+                      <span class="badge-role badge-role-super">Super Admin</span>
+                    </div>
+                    <span style="font-size:0.72rem; color:#94A3B8;">Sesi Aktif</span>
+                  </div>
+                </div>
+
+                <!-- Formulir Perbarui Akun Saya -->
+                <div class="panel-table" style="padding:1.75rem;">
+                  <div class="panel-title" style="margin-bottom:1.25rem;">
+                    <h2>Perbarui Profil &amp; Kata Sandi</h2>
+                    <p>Ubah nama tampilan atau perbarui kata sandi akun Anda</p>
+                  </div>
+
+                  <form id="profileForm" novalidate>
+                    <div class="form-field">
+                      <label class="field-label" for="profileNama">Nama Lengkap</label>
+                      <input type="text" id="profileNama" class="form-control" required>
+                    </div>
+
+                    <div class="form-field">
+                      <label class="field-label" for="profileNewPw">Kata Sandi Baru</label>
+                      <div class="input-box">
+                        <input type="password" id="profileNewPw" class="form-control"
+                          placeholder="Masukkan kata sandi baru (kosongkan jika tidak diubah)">
+                        <button type="button" class="btn-toggle-pw" onclick="togglePw('profileNewPw', this)"
+                          title="Lihat Sandi">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                        </button>
+                      </div>
+                      <div class="field-hint">Minimal 6 karakter untuk keamanan akun</div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="width:auto; padding:0.65rem 1.25rem;">
+                      Simpan Perubahan Profil
+                    </button>
+                  </form>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Modal Form Tambah / Ubah Pegawai -->
+    <div class="modal-overlay" id="userModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-box">
+        <div class="modal-header-bar">
+          <h3 id="modalTitle">Tambah Pegawai / User Baru</h3>
+          <button type="button" class="btn-modal-close" id="modalCloseBtn" aria-label="Tutup">&times;</button>
+        </div>
+
+        <form id="modalUserForm" novalidate>
+          <div class="modal-content-body">
+
+            <div class="form-field">
+              <label class="field-label" for="modalRole">Tingkat Peran</label>
+              <select id="modalRole" class="form-control" required>
+                <!-- Pilihan role diisi dari JS -->
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label" for="modalId">ID User / NIP</label>
+              <input type="text" id="modalId" class="form-control" placeholder="ID User" required>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label" for="modalNama">Nama Lengkap</label>
+              <input type="text" id="modalNama" class="form-control" placeholder="Nama lengkap pegawai" required>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label" for="modalPw">Kata Sandi</label>
+              <div class="input-box">
+                <input type="password" id="modalPw" class="form-control" placeholder="Kata sandi" required>
+                <button type="button" class="btn-toggle-pw" onclick="togglePw('modalPw', this)">Tampilkan</button>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label" for="modalUnit">Unit Kerja</label>
+              <select id="modalUnit" class="form-control" required>
+                <!-- Diisi dari JavaScript -->
+              </select>
+            </div>
+
+          </div>
+
+          <div class="modal-footer-bar">
+            <button type="button" class="btn-secondary btn-sm" id="modalCancelBtn">Batal</button>
+            <button type="submit" class="btn-primary btn-sm" style="width: auto;">Simpan Data</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Penerbitan & Upload Surat Balasan Resmi (Bidang & Sakres) -->
+    <div class="modal-overlay" id="modalBalasanSakres" role="dialog" aria-modal="true"
+      aria-labelledby="titleModalSakres">
+      <div class="modal-box" style="max-width: 640px;">
+        <div class="modal-header-bar" style="background:#153E75; color:#fff;">
+          <h3 id="titleModalSakres"
+            style="color:#fff; font-size:1.05rem; display:flex; align-items:center; gap:0.5rem;">
+            <span>✉️</span> Form &amp; Upload Surat Balasan Resmi
+          </h3>
+          <button type="button" class="btn-modal-close" onclick="closeModalSakres()" aria-label="Tutup"
+            style="color:#fff;">&times;</button>
+        </div>
+
+        <form id="formKirimBalasanSakres" onsubmit="handleSimpanSuratBalasan(event)">
+          <input type="hidden" id="sakresTargetTicket" value="">
+
+          <div class="modal-content-body" style="padding:1.25rem;">
+            <div
+              style="background:#F0F7FF; border:1px solid #BFDBFE; border-radius:8px; padding:0.85rem; margin-bottom:1rem; font-size:0.85rem;">
+              <div>Nomor Tiket: <strong id="sakresDisplayTicket"
+                  style="color:#1D4ED8; font-family:monospace; font-size:1rem;"></strong></div>
+              <div style="margin-top:0.25rem;">Pelapor: <strong id="sakresDisplayReporter"></strong> (<span
+                  id="sakresDisplayAgency"></span>)</div>
+              <div style="font-size:0.8rem; color:#1E3A8A; margin-top:0.2rem;">Perihal Laporan: <span
+                  id="sakresDisplaySubject"></span></div>
+            </div>
+
+            <!-- Opsi Metode Surat Balasan: Ketik Naskah atau Unggah Berkas Dokumen -->
+            <div class="form-field" style="margin-bottom:1rem;">
+              <label class="field-label" style="font-weight:700;">Metode Dokumen Balasan <span style="color:#DC2626;">*</span></label>
+              <div style="display:flex; gap:1rem; background:#F8FAFC; padding:0.6rem 0.85rem; border-radius:6px; border:1px solid #E2E8F0;">
+                <label style="display:inline-flex; align-items:center; gap:0.4rem; font-size:0.85rem; cursor:pointer; font-weight:600;">
+                  <input type="radio" name="metodeBalasan" value="ketik" checked onchange="toggleMetodeBalasan(this.value)" style="accent-color:#153E75;">
+                  <span>Ketik Naskah Resmi di Sistem</span>
+                </label>
+                <label style="display:inline-flex; align-items:center; gap:0.4rem; font-size:0.85rem; cursor:pointer; font-weight:600; color:#1D4ED8;">
+                  <input type="radio" name="metodeBalasan" value="upload" onchange="toggleMetodeBalasan(this.value)" style="accent-color:#153E75;">
+                  <span>📎 Unggah / Upload File Surat (PDF / Foto)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-field">
+                <label class="field-label" for="sakresNomorSurat">Nomor Surat Dinas Resmi <span
+                    style="color:#DC2626;">*</span></label>
+                <input type="text" id="sakresNomorSurat" class="form-control" placeholder="Contoh: 800/PUPR-BM/XI/2026"
+                  required>
+              </div>
+              <div class="form-field">
+                <label class="field-label" for="sakresPejabat">Pejabat / Unit Pengirim Balasan <span
+                    style="color:#DC2626;">*</span></label>
+                <input type="text" id="sakresPejabat" class="form-control" value="Hj. Ratna Sari, S.Kom., M.M."
+                  required>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label" for="sakresPerihalSurat">Perihal Surat Balasan <span
+                  style="color:#DC2626;">*</span></label>
+              <input type="text" id="sakresPerihalSurat" class="form-control"
+                placeholder="Contoh: Tanggapan dan Tindak Lanjut Penanganan Infrastruktur" required>
+            </div>
+
+            <!-- AREA 1: INPUT TEKS NASKAH RESMI -->
+            <div id="areaKetikNaskah" class="form-field">
+              <label class="field-label" for="sakresIsiSurat">Isi Dokumen Surat Tanggapan / Balasan <span
+                  style="color:#DC2626;">*</span></label>
+              <textarea id="sakresIsiSurat" class="form-control" rows="4"
+                placeholder="Tuliskan isi surat balasan kedinasan resmi untuk pelapor..."></textarea>
+            </div>
+
+            <!-- AREA 2: UPLOAD DOKUMEN / BERKAS SURAT -->
+            <div id="areaUploadDokumen" class="form-field" style="display:none; background:#EFF6FF; border:2px dashed #3B82F6; padding:1rem; border-radius:8px;">
+              <label class="field-label" for="sakresFileSurat" style="color:#1D4ED8; font-weight:700;">
+                Pilih Berkas Dokumen Surat Balasan (PDF / Dokumen Hasil Scan) <span style="color:#DC2626;">*</span>
+              </label>
+              <input type="file" id="sakresFileSurat" class="form-control" accept=".pdf,image/*" onchange="handleFileSuratChange(this)" style="background:#fff;">
+              <div style="font-size:0.75rem; color:#475569; margin-top:0.35rem;">
+                Format yang didukung: PDF, JPG, PNG (Maks 10MB). Setiap Bidang dan Seker dapat mengunggah berkas surat resminya masing-masing.
+              </div>
+              <div id="fileUploadInfo" style="display:none; margin-top:0.5rem; font-size:0.8rem; font-weight:700; color:#059669;">
+                ✓ File terpilih: <span id="fileNameDisplay"></span>
+              </div>
+            </div>
+
+            <div
+              style="margin-top:0.75rem; background:#FFFBEB; border:1px solid #FDE68A; border-radius:6px; padding:0.75rem; font-size:0.8rem; color:#92400E;">
+              💡 <strong>Integrasi Dokumen Digital &amp; Barcode:</strong> Dokumen/file balasan ini akan langsung dilengkapi <strong>QR Code Barcode Verifikasi</strong> resmi PU yang dapat diunduh dan dicek oleh pelapor di portal tamu.
+            </div>
+          </div>
+
+          <div class="modal-footer-bar">
+            <button type="button" class="btn-secondary btn-sm" onclick="closeModalSakres()">Batal</button>
+            <button type="submit" class="btn-primary btn-sm"
+              style="background:#153E75; border-color:#153E75; width:auto; font-weight:700;">
+              🚀 Simpan &amp; Terbitkan Surat Balasan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Lihat Dokumen Surat Balasan PDF & QR Barcode -->
+    <div class="modal-overlay" id="modalLihatSuratBalasan" role="dialog" aria-modal="true"
+      aria-labelledby="titleLihatSurat">
+      <div class="modal-box" style="max-width: 650px;">
+        <div class="modal-header-bar" style="background:#0F294A; color:#fff;">
+          <h3 id="titleLihatSurat" style="color:#fff; font-size:1.05rem;">📄 Dokumen Surat Balasan Resmi PUPR</h3>
+          <button type="button" class="btn-modal-close" onclick="closeModalLihatSurat()" aria-label="Tutup"
+            style="color:#fff;">&times;</button>
+        </div>
+
+        <div class="modal-content-body" style="padding:1.5rem;" id="contentSuratPdfPreview">
+          <!-- Di-render dinamis oleh Javascript -->
+        </div>
+
+        <div class="modal-footer-bar">
+          <button type="button" class="btn-secondary btn-sm" onclick="closeModalLihatSurat()">Tutup</button>
+          <button type="button" class="btn-primary btn-sm" onclick="cetakSuratBalasan()"
+            style="width:auto; font-weight:700;">
+            🖨️ Cetak / Unduh PDF
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Formulir Lapor Lupa Kata Sandi ke Super Admin -->
+    <div class="modal-overlay" id="modalLupaPassword" role="dialog" aria-modal="true" aria-labelledby="titleLupaPassword">
+      <div class="modal-box" style="max-width: 520px;">
+        <div class="modal-header-bar" style="background:#B91C1C; color:#fff;">
+          <h3 id="titleLupaPassword" style="color:#fff; font-size:1.05rem; display:flex; align-items:center; gap:0.5rem;">
+            <span>🔑</span> Lapor Lupa Kata Sandi ke Super Admin
+          </h3>
+          <button type="button" class="btn-modal-close" onclick="closeModalLupaPassword()" aria-label="Tutup" style="color:#fff;">&times;</button>
+        </div>
+
+        <form id="formLaporLupaPassword" onsubmit="handleLaporLupaPassword(event)">
+          <div class="modal-content-body" style="padding:1.25rem;">
+            <p style="font-size:0.83rem; color:#475569; margin-bottom:1rem; line-height:1.45;">
+              Jika Anda adalah admin unit atau pegawai yang lupa kata sandi akun, kirimkan permohonan di bawah ini. Laporan Anda akan langsung masuk ke meja <strong>Super Admin PU</strong> untuk dibantu reset sandi.
+            </p>
+
+            <div class="form-field" style="margin-bottom:0.85rem;">
+              <label class="field-label" for="lupaIdUser" style="font-weight:700;">ID User / NIP Anda <span style="color:#DC2626;">*</span></label>
+              <input type="text" id="lupaIdUser" class="form-control" placeholder="Contoh: PUPR-ADM-BM atau PUPR-SAKRES01" required style="font-weight:700; font-family:monospace;">
+            </div>
+
+            <div class="form-field" style="margin-bottom:0.85rem;">
+              <label class="field-label" for="lupaNama" style="font-weight:700;">Nama Lengkap Pegawai <span style="color:#DC2626;">*</span></label>
+              <input type="text" id="lupaNama" class="form-control" placeholder="Nama lengkap Anda sesuai data kepegawaian" required>
+            </div>
+
+            <div class="form-field" style="margin-bottom:0.85rem;">
+              <label class="field-label" for="lupaUnit" style="font-weight:700;">Unit Kerja / Direktorat <span style="color:#DC2626;">*</span></label>
+              <select id="lupaUnit" class="form-control" required>
+                <option value="">-- Pilih Unit Kerja Anda --</option>
+                <option value="Ditjen Bina Marga">Ditjen Bina Marga</option>
+                <option value="Ditjen Sumber Daya Air">Ditjen Sumber Daya Air</option>
+                <option value="Ditjen Cipta Karya">Ditjen Cipta Karya</option>
+                <option value="Ditjen Perumahan">Ditjen Perumahan</option>
+                <option value="Ditjen Bina Konstruksi">Ditjen Bina Konstruksi</option>
+                <option value="Ditjen Pembiayaan Infrastruktur">Ditjen Pembiayaan Infrastruktur</option>
+                <option value="Sekretariat Jenderal">Sekretariat Jenderal</option>
+                <option value="Inspektorat Jenderal">Inspektorat Jenderal</option>
+                <option value="Sekretariat / Sakres">Sekretariat / Sakres</option>
+              </select>
+            </div>
+
+            <div class="form-field" style="margin-bottom:0.85rem;">
+              <label class="field-label" for="lupaCatatan" style="font-weight:700;">Catatan / Alasan Permohonan</label>
+              <textarea id="lupaCatatan" class="form-control" rows="2" placeholder="Contoh: Lupa password setelah mutasi perangkat laptop kedinasan..."></textarea>
+            </div>
+
+            <div style="background:#FEF2F2; border:1px solid #FECACA; border-radius:6px; padding:0.65rem 0.85rem; font-size:0.78rem; color:#991B1B;">
+              🔒 <strong>Keamanan:</strong> Super Admin akan memverifikasi identitas Anda dan memberikan kata sandi baru kedinasan.
+            </div>
+          </div>
+
+          <div class="modal-footer-bar">
+            <button type="button" class="btn-secondary btn-sm" onclick="closeModalLupaPassword()">Batal</button>
+            <button type="submit" class="btn-primary btn-sm" style="background:#B91C1C; border-color:#B91C1C; width:auto; font-weight:700;">
+              📨 Kirim Laporan ke Super Admin
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Layanan Bantuan & Helpdesk PU -->
+    <div class="modal-overlay" id="helpdeskModal" role="dialog" aria-modal="true" aria-labelledby="helpdeskTitle">
+      <div class="modal-box" style="max-width: 580px;">
+        <div class="modal-header-bar">
+          <h3 id="helpdeskTitle">Layanan Bantuan &amp; Helpdesk PU</h3>
+          <button type="button" class="btn-modal-close" id="helpdeskCloseBtn" aria-label="Tutup">&times;</button>
+        </div>
+
+        <div class="modal-content-body" style="padding: 1.5rem;">
+          <div
+            style="display:flex; align-items:center; gap:0.75rem; background:#F8FAFC; border:1px solid var(--border-color); padding:1rem; border-radius:var(--radius-sm); margin-bottom:1.25rem;">
+            <div class="pupr-logo-box" style="width:40px; height:40px; font-size:1rem;">PU</div>
+            <div>
+              <div style="font-weight:700; color:var(--pupr-navy); font-size:0.9rem;">Pusat Data &amp; Teknologi
+                Informasi (PUSDATIN)</div>
+              <div style="font-size:0.75rem; color:var(--text-secondary);">Sekretariat Jenderal PU Pekerjaan Umum</div>
+            </div>
+          </div>
+
+          <div class="helpdesk-contact-grid"
+            style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1.25rem;">
+            <div
+              style="border:1px solid var(--border-color); padding:0.85rem; border-radius:var(--radius-sm); background:#FFFFFF;">
+              <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Call
+                Center Resmi</div>
+              <div style="font-size:1.1rem; font-weight:800; color:var(--pupr-navy); margin-top:0.2rem;">📞 158</div>
+              <div style="font-size:0.72rem; color:var(--text-secondary);">Senin - Jumat (08:00 - 16:00 WIB)</div>
+            </div>
+
+            <div
+              style="border:1px solid var(--border-color); padding:0.85rem; border-radius:var(--radius-sm); background:#FFFFFF;">
+              <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">
+                WhatsApp Layanan</div>
+              <div style="font-size:0.95rem; font-weight:800; color:#166534; margin-top:0.2rem;">💬 +62 811-193-0158
+              </div>
+              <div style="font-size:0.72rem; color:var(--text-secondary);">Pusdatin &bull; Pesan Cepat ASN</div>
+            </div>
+
+            <div
+              style="border:1px solid var(--border-color); padding:0.85rem; border-radius:var(--radius-sm); background:#FFFFFF;">
+              <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Surel
+                / Email Dinas</div>
+              <div style="font-size:0.85rem; font-weight:700; color:var(--pupr-navy); margin-top:0.2rem;">✉️
+                helpdesk@pu.go.id</div>
+              <div style="font-size:0.72rem; color:var(--text-secondary);">Tiket penanganan 1x24 jam</div>
+            </div>
+
+            <div
+              style="border:1px solid var(--border-color); padding:0.85rem; border-radius:var(--radius-sm); background:#FFFFFF;">
+              <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Alamat
+                Kantor Pusat</div>
+              <div style="font-size:0.78rem; font-weight:600; color:#334155; margin-top:0.2rem;">Gedung Pusdatin Lt. 3
+              </div>
+              <div style="font-size:0.72rem; color:var(--text-secondary);">Jl. Pattimura 20, Jakarta Selatan</div>
+            </div>
+          </div>
+
+          <!-- FAQ Singkat -->
+          <div style="border-top:1px solid var(--border-color); padding-top:1rem;">
+            <div style="font-size:0.8rem; font-weight:700; color:var(--pupr-navy); margin-bottom:0.5rem;">Pertanyaan
+              Umum (FAQ Kepegawaian):</div>
+            <details
+              style="font-size:0.8rem; margin-bottom:0.5rem; background:#F8FAFC; padding:0.5rem 0.75rem; border-radius:var(--radius-xs);">
+              <summary style="cursor:pointer; font-weight:600; color:var(--text-primary);">Bagaimana jika lupa kata
+                sandi akun?</summary>
+              <div style="padding-top:0.35rem; color:var(--text-secondary);">Hubungi Admin Unit di direktorat kerja Anda
+                atau Super Admin Sekretariat Jenderal untuk mengatur ulang kata sandi sementara.</div>
+            </details>
+            <details
+              style="font-size:0.8rem; margin-bottom:0.5rem; background:#F8FAFC; padding:0.5rem 0.75rem; border-radius:var(--radius-xs);">
+              <summary style="cursor:pointer; font-weight:600; color:var(--text-primary);">Siapa yang berwenang menambah
+                akun staf PIC?</summary>
+              <div style="padding-top:0.35rem; color:var(--text-secondary);">Admin Unit pada unit kerja terkait memiliki
+                wewenang membuat dan mengelola akun PIC di lingkungannya.</div>
+            </details>
+          </div>
+        </div>
+
+        <div class="modal-footer-bar">
+          <button type="button" class="btn-primary btn-sm" id="helpdeskOkBtn" style="width: auto;">Tutup Layanan
+            Bantuan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Area Notifikasi Toast -->
+    <div class="toast-area" id="toastContainer" aria-live="polite"></div>
+
+    <!-- Footer Resmi -->
+    <footer class="pupr-footer">
+      PU (Pekerjaan Umum) Republik Indonesia &copy; 2026. Hak Cipta Dilindungi.
+    </footer>
+
+  </div>
+
+  <script src="app.js?v=5.0"></script>
+</body>
+
+</html>
